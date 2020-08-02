@@ -11,11 +11,12 @@
         android:layout_weight="10"
         android:gravity="center_vertical"
         android:paddingLeft="15dp"
-        android:textSize="18dp" />
+        android:textSize="18dp"
+        android:clickable="true"/>
 
     <ImageButton
         android:id="@+id/item_done"
-        android:layout_width="67dp"
+        android:layout_width="30dp"
         android:layout_height="50dp"
         android:layout_weight="1"
         android:adjustViewBounds="false"
@@ -31,7 +32,8 @@
         android:adjustViewBounds="false"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
-        android:src="@drawable/ic_action_delete" />
+        android:src="@drawable/ic_action_delete"
+        android:visibility="gone"/>
 
 
 </LinearLayout>

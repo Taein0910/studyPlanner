@@ -47,6 +47,18 @@
 
     </LinearLayout>
 
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        app:textColorSelected="#778beb"
+        app:textColorNormal="#a9a9a9"
+        app:selectorColor="#778beb"
+        app:selectedDateBackground="#fff"
+    />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

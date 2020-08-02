@@ -1,6 +1,7 @@
 package com.icecream.studyplanner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.util.TypedValue;
@@ -70,29 +71,25 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewholder.item_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(viewholder.title.getPaintFlags() == 0) {
-                    viewholder.title.setPaintFlags(viewholder.title.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-                    viewholder.item_done.setImageResource(R.drawable.ic_action_done_green);
-
-                } else {
-                    viewholder.title.setPaintFlags(0);
-                    viewholder.item_done.setImageResource(R.drawable.ic_action_done);
-
-                }
+                mList.remove(position);
+                notifyItemRemoved(position);
+                notifyDataSetChanged();
 
             }
         });
         ///////////\
 
-        /// 삭제 버튼 이벤트
-        viewholder.item_delete.setOnClickListener(new View.OnClickListener() {
+        viewholder.title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mList.remove(position);
-                notifyItemRemoved(position);
+                // TextView 클릭
+                Context context = v.getContext();
+                Intent intent = new Intent(context, TodoDetail.class);
+                intent.putExtra("todoDetailData", ""); //데이터 put 해야함
+                context.startActivity(intent);
+
             }
         });
-        ///////////
     }
 
     @Override
