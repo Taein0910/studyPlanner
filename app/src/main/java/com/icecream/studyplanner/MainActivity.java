@@ -50,12 +50,13 @@ public class MainActivity extends Activity {
     private RecyclerView mRecyclerView;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "pref";
-    private JSONArray jsonarray = new JSONArray();
+    private JSONArray jsonarrayTODO = new JSONArray();
 
     private JSONArray jsonArray2;
     private ArrayList<String>titleList;
     private ArrayList<String>DescriptionList;
     private ArrayList<String>dateList;
+    private String previousTodo;
 
 
 
@@ -112,6 +113,29 @@ public class MainActivity extends Activity {
         Log.e("ms", i);
         String displayedTimer = formatter.format(new Date(Integer.parseInt(i)));
         todayTotalTime.setText(displayedTimer);
+
+        String roadJSONTodo = sharedpreferences.getString("todoJson", ""); //기존 투두 데이터
+        previousTodo = roadJSONTodo;
+        try {
+            JSONArray jsonarray = new JSONArray(roadJSONTodo);
+            jsonarrayTODO = new JSONArray(previousTodo);
+            for(int k=0; k < jsonarray.length(); k++) {
+                JSONObject jsonobject = jsonarray.getJSONObject(k);
+                String name       = jsonobject.getString("name");
+                String content    = jsonobject.getString("content");
+                String date  = jsonobject.getString("date");
+
+                Todo todo = new Todo(name, "");
+                mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
+            }
+
+        } catch (JSONException e) {
+            Log.w("error", "something error!!", e);
+        }
+
+
+
+
 
 
 
@@ -206,21 +230,25 @@ public class MainActivity extends Activity {
                     object.put("date", date);
 
 
-                    jsonarray.put(object);
-                    Log.e("data", jsonarray.toString());
+                    jsonarrayTODO.put(object);
+                    Log.e("data", jsonarrayTODO.toString());
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString("todoJson", jsonarrayTODO.toString()); //투두 => json으로 저장
+                    editor.apply();
 
-                    try { //////////////////////여기 수정!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        jsonArray2 = new JSONArray(jsonarray.toString());
-                        for(int i = 0 ; i<jsonarray.length(); i++){
-                            JSONObject jsonObject = jsonarray.getJSONObject(i);
+                    try {
+                        jsonArray2 = new JSONArray(jsonarrayTODO.toString());
+                        titleList.clear();
+                        DescriptionList.clear();
+                        dateList.clear();
+                        for(int i = 0 ; i<jsonarrayTODO.length(); i++){
+                            JSONObject jsonObject = jsonarrayTODO.getJSONObject(i);
                             String title = jsonObject.getString("name");
                             String description = jsonObject.getString("content");
                             String date_ = jsonObject.getString("date");
                             titleList.add(title);
                             DescriptionList.add(description);
                             dateList.add(date_);
-
-
                         }
 
                         Log.e("debug",titleList.toString());
