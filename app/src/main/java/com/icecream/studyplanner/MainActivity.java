@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
     private ArrayList<String>DescriptionList;
     private ArrayList<String>dateList;
     private String previousTodo;
-
+    public static String roadJSONTodo;
 
 
     @Override
@@ -114,7 +114,9 @@ public class MainActivity extends Activity {
         String displayedTimer = formatter.format(new Date(Integer.parseInt(i)));
         todayTotalTime.setText(displayedTimer);
 
-        String roadJSONTodo = sharedpreferences.getString("todoJson", ""); //기존 투두 데이터
+
+        roadJSONTodo = sharedpreferences.getString("todoJson", ""); //기존 투두 데이터
+
         previousTodo = roadJSONTodo;
         try {
             JSONArray jsonarray = new JSONArray(roadJSONTodo);
