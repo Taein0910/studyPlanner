@@ -9,14 +9,18 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class TimerActivity extends AppCompatActivity {
+
+public class TimerActivity extends AppCompatActivity{
 
     TextView timer ;
-    Button start, pause, reset;
+    Button pause, translator;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
     Handler handler;
     int Hours, Seconds, Minutes ;
@@ -28,9 +32,10 @@ public class TimerActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
         timer = (TextView)findViewById(R.id.tvTimer);
         pause = (Button)findViewById(R.id.btPause);
-
+        translator = (Button) findViewById(R.id.translator);
         handler = new Handler() ;
 
         StartTime = SystemClock.uptimeMillis();
@@ -59,6 +64,8 @@ public class TimerActivity extends AppCompatActivity {
 
 
     }
+
+
 
     public Runnable runnable = new Runnable() {
 

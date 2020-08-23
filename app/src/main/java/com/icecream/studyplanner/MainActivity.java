@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -47,6 +50,7 @@ public class MainActivity extends Activity {
     private TextView todayTotalTime;
     private Button timerButton;
     private Button addButton;
+    private ImageButton moreBtn;
     private RecyclerView mRecyclerView;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "pref";
@@ -58,6 +62,7 @@ public class MainActivity extends Activity {
     private ArrayList<String>dateList;
     private String previousTodo;
     public static String roadJSONTodo;
+    private String currentSelectedDate;
 
 
     @Override
@@ -74,7 +79,7 @@ public class MainActivity extends Activity {
 
 /** start before 1 month from now */
         Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
+        startDate.add(Calendar.DATE, -7);
 
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
                 .startDate(startDate.getTime())
@@ -82,8 +87,9 @@ public class MainActivity extends Activity {
 
         todayTotalTime = (TextView) findViewById(R.id.todayTotalTime);
         timerButton = (Button) findViewById(R.id.timerButton);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         addButton = (Button) findViewById(R.id.addbtn);
+        moreBtn = (ImageButton) findViewById(R.id.moreBtn);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         /////
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
@@ -104,6 +110,20 @@ public class MainActivity extends Activity {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String formattedDate = df.format(c);
 
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-M-dd" );
+
+        Date date = null;
+        try {
+            date = originalFormat.parse(formattedDate);
+            currentSelectedDate =targetFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String i = sharedpreferences.getString("todaytotalTime", "0");
         String savedate = sharedpreferences.getString("savedate", formattedDate);
@@ -118,25 +138,33 @@ public class MainActivity extends Activity {
         roadJSONTodo = sharedpreferences.getString("todoJson", ""); //기존 투두 데이터
 
         previousTodo = roadJSONTodo;
+
         try {
+            mArrayList.clear();
+
             JSONArray jsonarray = new JSONArray(roadJSONTodo);
             jsonarrayTODO = new JSONArray(previousTodo);
-            for(int k=0; k < jsonarray.length(); k++) {
-                JSONObject jsonobject = jsonarray.getJSONObject(k);
-                String name       = jsonobject.getString("name");
-                String content    = jsonobject.getString("content");
-                String date  = jsonobject.getString("date");
 
-                Todo todo = new Todo(name, "");
-                mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
+            for (int p = 0; p < jsonarrayTODO.length(); p++) {
+                JSONObject jsonObject = jsonarrayTODO.getJSONObject(p);
+                String dateServe = jsonObject.getString("date");
+                Log.e("taein", dateServe+", "+currentSelectedDate);
+
+                if(dateServe.equals(currentSelectedDate)) {
+                    Log.e("taein", "true");
+                    String name = jsonObject.getString("name");
+                    Todo todo = new Todo(name, "");
+                    mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
+                } else {
+                    Log.e("taein", "false");
+                }
             }
+            mRecyclerView.smoothScrollToPosition(0);
+            mAdapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
             Log.w("error", "something error!!", e);
         }
-
-
-
 
 
 
@@ -155,7 +183,34 @@ public class MainActivity extends Activity {
             public void onDateSelected(Date date, int position) {
                 DateFormat formatter = new SimpleDateFormat("YYYY-M-d", Locale.KOREA);
                 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Toast.makeText(MainActivity.this, formatter.format(date), Toast.LENGTH_SHORT).show();
+                currentSelectedDate = formatter.format(date);
+
+                //선택된 날짜에 해당하는 항목만 갱신
+                try {
+                    mArrayList.clear();
+                    JSONArray jsonarray = new JSONArray(roadJSONTodo);
+                    jsonarrayTODO = new JSONArray(previousTodo);
+
+                    for (int p = 0; p < jsonarrayTODO.length(); p++) {
+                        JSONObject jsonObject = jsonarrayTODO.getJSONObject(p);
+                        String dateServe = jsonObject.getString("date");
+                        Log.e("taein", dateServe+", "+currentSelectedDate);
+
+                        if(dateServe.equals(currentSelectedDate)) {
+                            Log.e("taein", "true");
+                            String nameResult = jsonObject.getString("name");
+                            Todo todo = new Todo(nameResult, "");
+                            mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
+                        } else {
+                            Log.e("taein", "false");
+                        }
+                    }
+
+                    mRecyclerView.smoothScrollToPosition(0);
+                    mAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Log.w("error", "something error!!", e);
+                }
             }
         });
 
@@ -178,6 +233,15 @@ public class MainActivity extends Activity {
                 startActivityForResult(i, 2);
             }
         });
+
+        moreBtn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -237,39 +301,40 @@ public class MainActivity extends Activity {
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString("todoJson", jsonarrayTODO.toString()); //투두 => json으로 저장
                     editor.apply();
-
-                    try {
-                        jsonArray2 = new JSONArray(jsonarrayTODO.toString());
-                        titleList.clear();
-                        DescriptionList.clear();
-                        dateList.clear();
-                        for(int i = 0 ; i<jsonarrayTODO.length(); i++){
-                            JSONObject jsonObject = jsonarrayTODO.getJSONObject(i);
-                            String title = jsonObject.getString("name");
-                            String description = jsonObject.getString("content");
-                            String date_ = jsonObject.getString("date");
-                            titleList.add(title);
-                            DescriptionList.add(description);
-                            dateList.add(date_);
-                        }
-
-                        Log.e("debug",titleList.toString());
-
-                        Todo todo = new Todo(name, "");
-                        mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+
+
+                //선택된 날짜에 해당하는 항목만 갱신
+                try {
+                    jsonarrayTODO = new JSONArray(jsonarrayTODO.toString());
+                    mArrayList.clear();
+
+                    for (int p = 0; p < jsonarrayTODO.length(); p++) {
+                        JSONObject jsonObject = jsonarrayTODO.getJSONObject(p);
+                        String dateServe = jsonObject.getString("date");
+                        Log.e("taein", dateServe+", "+currentSelectedDate);
+
+                        if(dateServe.equals(currentSelectedDate)) {
+                            Log.e("taein", "true");
+                            String nameResult = jsonObject.getString("name");
+                            Todo todo = new Todo(nameResult, "");
+                            mArrayList.add(0, todo); //RecyclerView의 첫 줄에 삽입
+                        } else {
+                            Log.e("taein", "false");
+                        }
+                    }
+
+                    mRecyclerView.smoothScrollToPosition(0);
+                    mAdapter.notifyDataSetChanged();
+
+
+                } catch (JSONException e) {
+                    Log.w("error", "something error!!", e);
+                }
+////////////////
 
 
 

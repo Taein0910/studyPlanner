@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -26,6 +27,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.w3c.dom.Text;
 
 import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +48,8 @@ public class EditTodo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_todo);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         textView = (TextView) findViewById(R.id.titleEdt);
         textView2 = (TextView) findViewById(R.id.description);
@@ -92,7 +96,8 @@ public class EditTodo extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
             {
-                datapickerBtn.setText((year+"-"+(monthOfYear+1)+ "-" + dayOfMonth));
+                    datapickerBtn.setText((year+"-"+(monthOfYear+1)+ "-" + dayOfMonth));
+
             }
         };
 
