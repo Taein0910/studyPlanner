@@ -2,7 +2,7 @@ package com.icecream.studyplanner;
 
 public class Todo {
     private String title;
-    private String description;
+    private String content;
 
     public String getTitle() {
         return title;
@@ -13,15 +13,15 @@ public class Todo {
     }
 
     public String getDescription() {
-        return description;
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String content) {
+        this.content = content;
     }
 
-    public Todo(String title, String description) {
+    public Todo(String title, String content) {
         this.title = title;
-        this.description = description;
+        this.content = content;
     }
 }

@@ -41,7 +41,7 @@ import java.util.TimeZone;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
     private ArrayList<Todo> mArrayList;
     private CustomAdapter mAdapter;
@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
         titleList = new ArrayList<>();
         DescriptionList = new ArrayList<>();
         dateList = new ArrayList<>();
+
 
 
 /** start before 1 month from now */
@@ -111,7 +112,7 @@ public class MainActivity extends Activity {
         String formattedDate = df.format(c);
 
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-M-dd" );
+        SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-M-d" );
 
         Date date = null;
         try {
@@ -141,7 +142,7 @@ public class MainActivity extends Activity {
 
         try {
             mArrayList.clear();
-
+            roadJSONTodo = sharedpreferences.getString("todoJson", "");
             JSONArray jsonarray = new JSONArray(roadJSONTodo);
             jsonarrayTODO = new JSONArray(previousTodo);
 
@@ -187,9 +188,10 @@ public class MainActivity extends Activity {
 
                 //선택된 날짜에 해당하는 항목만 갱신
                 try {
+                    roadJSONTodo = sharedpreferences.getString("todoJson", "");
                     mArrayList.clear();
                     JSONArray jsonarray = new JSONArray(roadJSONTodo);
-                    jsonarrayTODO = new JSONArray(previousTodo);
+                    jsonarrayTODO = new JSONArray(roadJSONTodo);
 
                     for (int p = 0; p < jsonarrayTODO.length(); p++) {
                         JSONObject jsonObject = jsonarrayTODO.getJSONObject(p);
@@ -290,6 +292,8 @@ public class MainActivity extends Activity {
                 String date = data.getStringExtra("date");
                 //JSON데이터 생성
 
+
+
                 try {
                     object.put("name", name);
                     object.put("content", content);
@@ -309,7 +313,8 @@ public class MainActivity extends Activity {
 
                 //선택된 날짜에 해당하는 항목만 갱신
                 try {
-                    jsonarrayTODO = new JSONArray(jsonarrayTODO.toString());
+                    roadJSONTodo = sharedpreferences.getString("todoJson", "");
+                    jsonarrayTODO = new JSONArray(roadJSONTodo);
                     mArrayList.clear();
 
                     for (int p = 0; p < jsonarrayTODO.length(); p++) {

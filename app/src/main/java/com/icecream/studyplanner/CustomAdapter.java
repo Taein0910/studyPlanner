@@ -134,7 +134,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                 // TextView 클릭
                 Context context = v.getContext();
                 Intent intent = new Intent(context, TodoDetail.class);
-                intent.putExtra("todoDetailData", ""); //데이터 put 해야함
+
+                intent.putExtra("todoDetailTitle", mList.get(position).getTitle());
+
+                intent.putExtra("todoDetailDescription", mList.get(position).getDescription());
+                Log.e("detail",  mList.get(position).getTitle()+", "+mList.get(position).getDescription());
                 context.startActivity(intent);
 
             }

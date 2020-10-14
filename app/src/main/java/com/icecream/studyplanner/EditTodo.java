@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,8 @@ public class EditTodo extends AppCompatActivity {
     private Button button;
     private Button datapickerBtn;
 
+    private ImageButton backbtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,17 @@ public class EditTodo extends AppCompatActivity {
 
         button = (Button) findViewById(R.id.savebtn);
         datapickerBtn = (Button) findViewById(R.id.datapickerbtn);
+
+        backbtn = (ImageButton) findViewById(R.id.backbtn);
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TextView 클릭
+                finish();
+
+            }
+        });
 
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
